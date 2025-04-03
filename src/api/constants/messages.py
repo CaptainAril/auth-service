@@ -64,6 +64,8 @@ class PasswordResetMessages(TypedDict):
     TOKEN_EXPIRED: str
     PASSWORD_RESET: str
     DOESNT_EXIST: str
+    INACTIVE: str
+    DISABLED: str
 
 
 class Messages(TypedDict):
@@ -154,6 +156,8 @@ MESSAGES: Messages = {
         "INVALID_TOKEN": "Invalid password reset token!",
         "DOESNT_EXIST": "You don't have an account with us yet!",
         "TOKEN_EXPIRED": "Password reset token has expired!",
+        "INACTIVE": "You can only reset the password of an active account!",
+        "DISABLED": "You can only reset the password of an enabled account!",
     },
 }
 
