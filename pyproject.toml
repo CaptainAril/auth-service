@@ -1,7 +1,7 @@
 [project]
-name = "df-wallet-user-service"
+name = "df-wallet-auth-service"
 dynamic = ["version"]
-description = "Developers Foundry Wallet System"
+description = "Developers Foundry Wallet Auth Service"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

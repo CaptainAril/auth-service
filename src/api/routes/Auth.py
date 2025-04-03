@@ -17,6 +17,9 @@ from src.api.models.payload.requests.AuthenticateUserOtp import AuthenticateUser
 from src.api.models.payload.requests.AuthenticateUserRequest import (
     AuthenticateUserRequest,
 )
+from src.api.models.payload.requests.ChangeUserPasswordRequest import (
+    ChangeUserPasswordRequest,
+)
 
 router = Router()
 
@@ -73,3 +76,19 @@ async def validate_email(
 async def login(request: HttpRequest, credentials: AuthenticateUserRequest) -> tuple:
     auth_controller = await ADepends(AuthController)
     return await auth_controller.login(credentials)
+
+
+@router.put(
+    "/change-password",
+    response={
+        HTTPStatus.OK: SuccessResponse,
+        HTTPStatus.BAD_REQUEST: ErrorResponse,
+        HTTPStatus.INTERNAL_SERVER_ERROR: ServerErrorResponse,
+    },
+)
+async def update_password(
+    request: HttpRequest, user_data: ChangeUserPasswordRequest
+) -> tuple:
+    user_id = getattr(request, "auth_id", "")
+    auth_controller = await ADepends(AuthController)
+    return await auth_controller.change_password(user_id, user_data)
