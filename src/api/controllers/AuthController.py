@@ -12,6 +12,9 @@ from src.api.models.payload.requests.AuthenticateUserOtp import AuthenticateUser
 from src.api.models.payload.requests.AuthenticateUserRequest import (
     AuthenticateUserRequest,
 )
+from src.api.models.payload.requests.ChangeUserPasswordRequest import (
+    ChangeUserPasswordRequest,
+)
 
 
 @Service()
@@ -65,5 +68,18 @@ class AuthController:
         return success_response(
             message=auth_user["message"],
             data={"user": auth_user["user"], "token": auth_user["token"]},
+            status_code=HTTPStatus.OK,
+        )
+
+    async def change_password(
+        self, id: str, user_data: ChangeUserPasswordRequest
+    ) -> tuple:
+        updated_password = await self.auth_service.change_password(id, user_data)
+        if not updated_password["is_success"]:
+            return error_response(
+                message=updated_password["message"], status_code=HTTPStatus.BAD_REQUEST
+            )
+        return success_response(
+            message=updated_password["message"],
             status_code=HTTPStatus.OK,
         )

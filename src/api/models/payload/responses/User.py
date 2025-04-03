@@ -13,16 +13,6 @@ class UserResponse(ModelSchema):
         fields = (
             "id",
             "email",
-            "first_name",
-            "last_name",
-            "profile_picture",
-            "phone_number",
-        )
-        fields_optional = (
-            "first_name",
-            "last_name",
-            "profile_picture",
-            "phone_number",
         )
 
 
