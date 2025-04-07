@@ -8,6 +8,7 @@ from django.utils import timezone
 
 from src.env import jwt_config
 from src.utils.svcs import Service
+from src.api.typing.JWT import JWTData
 from src.api.models.postgres import User
 from src.api.typing.ExpireUUID import ExpireUUID
 from src.api.enums.CharacterCasing import CharacterCasing
@@ -70,9 +71,23 @@ class UtilityService:
         jwt_claims = {
             "exp": timezone.now() + timedelta(seconds=3600),
             "iss": jwt_config["issuer"],
-            "aud": email,
+            "aud": jwt_config["issuer"],
         }
         return jwt.encode(dict(jwt_data, **jwt_claims), jwt_config["secret"])
+
+    @staticmethod
+    def decrypt_jwt(token: str) -> JWTData | None:
+        try:
+            data = jwt.decode(
+                token,
+                jwt_config["secret"],
+                algorithms=["HS256"],
+                issuer=jwt_config["issuer"],
+                audience=jwt_config["issuer"],
+            )
+            return {"email": data["email"], "user_id": data["user_id"]}
+        except jwt.exceptions.InvalidTokenError:
+            ...
 
     @staticmethod
     def generate_uuid() -> ExpireUUID:

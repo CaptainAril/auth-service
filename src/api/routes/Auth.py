@@ -5,6 +5,7 @@ from django.http import HttpRequest
 
 from src.utils.svcs import ADepends
 from src.api.controllers.AuthController import AuthController
+from src.api.models.payload.requests.JWT import JWT
 from src.api.models.payload.responses.User import UserResponse, UserLoginResponse
 from src.api.models.payload.requests.ResendUserOtp import ResendUserOtp
 from src.api.models.payload.responses.ErrorResponse import (
@@ -76,6 +77,19 @@ async def validate_email(
 async def login(request: HttpRequest, credentials: AuthenticateUserRequest) -> tuple:
     auth_controller = await ADepends(AuthController)
     return await auth_controller.login(credentials)
+
+
+@router.post(
+    "/validate-token",
+    response={
+        HTTPStatus.OK: SuccessResponse,
+        HTTPStatus.UNAUTHORIZED: ErrorResponse,
+        HTTPStatus.INTERNAL_SERVER_ERROR: ServerErrorResponse,
+    },
+)
+async def validate_jwt_token(request: HttpRequest, credentials: JWT) -> tuple:
+    auth_controller = await ADepends(AuthController)
+    return await auth_controller.validate_token(credentials)
 
 
 @router.put(

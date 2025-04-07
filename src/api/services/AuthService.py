@@ -2,10 +2,12 @@ from typing import Annotated
 
 from src.utils.svcs import Service
 from src.utils.logger import Logger
+from src.api.typing.JWT import JWTSuccess
 from src.api.typing.UserExists import UserExists
 from src.api.constants.messages import MESSAGES, DYNAMIC_MESSAGES
 from src.api.typing.UserSuccess import UserSuccess
 from src.api.constants.activity_types import ACTIVITY_TYPES
+from src.api.models.payload.requests.JWT import JWT
 from src.api.repositories.UserRepository import UserRepository
 from src.api.models.payload.requests.ResendUserOtp import ResendUserOtp
 from src.api.models.payload.requests.CreateUserRequest import CreateUserRequest
@@ -232,6 +234,29 @@ class AuthService:
             "user": user,
             "token": jwt_details,
         }
+
+    async def validate_token(self, req: JWT) -> JWTSuccess:
+        data = self.utility_service.decrypt_jwt(req.token)
+        if not data:
+            message = MESSAGES["AUTH"]["TOKEN_ERROR"]
+            self.logger.info(
+                {
+                    "activity_type": ACTIVITY_TYPES["VALIDATE_TOKEN"],
+                    "message": message,
+                    "metadata": {"token": req.token},
+                }
+            )
+            return {"is_success": False, "message": message}
+
+        message = MESSAGES["AUTH"]["TOKEN_SUCCESS"]
+        self.logger.info(
+            {
+                "activity_type": ACTIVITY_TYPES["VALIDATE_TOKEN"],
+                "message": message,
+                "metadata": {"user": {"email": data["email"], "id": data["user_id"]}},
+            }
+        )
+        return {"is_success": True, "message": message, "data": data}
 
     async def change_password(
         self, id: str, req: ChangeUserPasswordRequest

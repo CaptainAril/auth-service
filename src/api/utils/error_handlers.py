@@ -1,7 +1,6 @@
 import traceback
 from http import HTTPStatus
 
-import jwt
 from django.http import HttpRequest, HttpResponse
 from ninja.errors import ValidationError, AuthenticationError
 
@@ -15,7 +14,6 @@ from .response_format import error_response
 exception_logger = Logger("API Exception")
 
 
-@api.exception_handler(jwt.exceptions.InvalidTokenError)
 @api.exception_handler(AuthenticationError)
 def on_invalid_token(request: HttpRequest, exc: Exception) -> HttpResponse:
     exception_logger.debug(

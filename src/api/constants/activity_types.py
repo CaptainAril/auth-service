@@ -9,6 +9,7 @@ class ActivityTypes(TypedDict):
     RESEND_EMAIL: str
     EMAIL_VALIDATION: str
     USER_LOGIN: str
+    VALIDATE_TOKEN: str
     CHANGE_PASSWORD: str
     REQUEST_RESET_PASSWORD: str
     CONFIRM_RESET_PASSWORD: str
@@ -22,6 +23,7 @@ ACTIVITY_TYPES: ActivityTypes = {
     "RESEND_EMAIL": "Resend email validation",
     "EMAIL_VALIDATION": "Email validation",
     "USER_LOGIN": "User login",
+    "VALIDATE_TOKEN": "Validate token",
     "CHANGE_PASSWORD": "Change user password",
     "REQUEST_RESET_PASSWORD": "Request for password reset",
     "CONFIRM_RESET_PASSWORD": "Confirm password reset",
