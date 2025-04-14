@@ -6,6 +6,7 @@ from src.utils.logger import Logger
 from src.api.constants.messages import MESSAGES
 from src.api.services.AuthService import AuthService
 from src.api.utils.response_format import error_response, success_response
+from src.api.models.payload.requests.JWT import JWT
 from src.api.models.payload.requests.ResendUserOtp import ResendUserOtp
 from src.api.models.payload.requests.CreateUserRequest import CreateUserRequest
 from src.api.models.payload.requests.AuthenticateUserOtp import AuthenticateUserOtp
@@ -68,6 +69,18 @@ class AuthController:
         return success_response(
             message=auth_user["message"],
             data={"user": auth_user["user"], "token": auth_user["token"]},
+            status_code=HTTPStatus.OK,
+        )
+
+    async def validate_token(self, credentials: JWT) -> tuple:
+        jwt_details = await self.auth_service.validate_token(credentials)
+        if not jwt_details["is_success"]:
+            return error_response(
+                message=jwt_details["message"], status_code=HTTPStatus.UNAUTHORIZED
+            )
+        return success_response(
+            message=jwt_details["message"],
+            data=jwt_details["data"],
             status_code=HTTPStatus.OK,
         )
 

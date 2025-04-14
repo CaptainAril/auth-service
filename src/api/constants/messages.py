@@ -17,6 +17,8 @@ class AuthMessages(TypedDict):
     NOT_ENABLED: str
     IS_DELETED: str
     SUCCESS: str
+    TOKEN_ERROR: str
+    TOKEN_SUCCESS: str
 
 
 class OtpMessages(TypedDict):
@@ -28,28 +30,9 @@ class OtpMessages(TypedDict):
 
 class UserMessages(TypedDict):
     DOESNT_EXIST: str
-    UPDATED: str
     SANITIZED: str
-    NOT_ALLOWED: str
-    PIN_EXISTS: str
-    PIN_SET: str
     INCORRECT_PASSWORD: str
     PASSWORD_CHANGED: str
-
-
-class AccountMessages(TypedDict):
-    SAVED: str
-    UPDATED: str
-
-
-class NextOfKinMessages(TypedDict):
-    FETCHED: str
-    UPDATED: str
-
-
-class KYCInformationMessages(TypedDict):
-    FETCHED: str
-    UPDATED: str
 
 
 class CommonMessages(TypedDict):
@@ -73,9 +56,6 @@ class Messages(TypedDict):
     AUTH: AuthMessages
     OTP: OtpMessages
     USER: UserMessages
-    ACCOUNT: AccountMessages
-    NOK: NextOfKinMessages
-    KYC: KYCInformationMessages
     COMMON: CommonMessages
     PASSWORD_RESET: PasswordResetMessages
 
@@ -116,6 +96,8 @@ MESSAGES: Messages = {
         "NOT_ENABLED": "User account is disabled. Please contact support",
         "IS_DELETED": "User account has been deleted. Please contact support if you want to restore your account",
         "SUCCESS": "Successfully logged in",
+        "TOKEN_ERROR": "Invalid token",
+        "TOKEN_SUCCESS": "Valid token",
     },
     "OTP": {
         "SEND_SUCCESS": "OTP sent successfully",
@@ -125,25 +107,9 @@ MESSAGES: Messages = {
     },
     "USER": {
         "DOESNT_EXIST": "User doesn't exist",
-        "UPDATED": "User updated successfully",
         "SANITIZED": "User object was sanitized",
-        "PIN_EXISTS": "You already have a transaction PIN on your account!",
-        "PIN_SET": "Transaction PIN set successfully",
-        "NOT_ALLOWED": "Unauthorized request!",
         "INCORRECT_PASSWORD": "Incorrect old password",
         "PASSWORD_CHANGED": "Password changed successfully",
-    },
-    "ACCOUNT": {
-        "SAVED": "Withdrawal account details saved succesfully",
-        "UPDATED": "User Withdraw account updated successfully",
-    },
-    "NOK": {
-        "FETCHED": "Next of Kin fetched successfully",
-        "UPDATED": "Next of Kin updated successfully",
-    },
-    "KYC": {
-        "FETCHED": "KYC Information fetched successfully",
-        "UPDATED": "KYC Information updated successfully",
     },
     "COMMON": {
         "INTERNAL_SERVER_ERROR": "Something went wrong",
