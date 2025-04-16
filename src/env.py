@@ -50,6 +50,10 @@ class OTP(TypedDict):
     lifetime: int
 
 
+class RabbitMQ(TypedDict):
+    host: str
+
+
 env = Env()
 
 app: App = {
@@ -99,5 +103,7 @@ jwt_config: JWT = {
 }
 
 otp: OTP = {"lifetime": get_env_int("OTP_LIFETIME")}
+
+rabbitmq_config: RabbitMQ = {"host": get_env_str("RABBITMQ_HOST")}
 
 __all__ = ["app", "cache", "db", "env", "jwt_config", "log", "otp"]
