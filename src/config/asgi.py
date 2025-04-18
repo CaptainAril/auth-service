@@ -21,10 +21,8 @@ broker = RabbitBroker(host=rabbitmq_config["host"])
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "src.config.settings")
 
-django_application = get_asgi_application()
-
 application = Starlette(
-    routes=[Mount("/", get_asgi_application())],
+    routes=[Mount("/", get_asgi_application())],  # type: ignore
     on_startup=[broker.start],
     on_shutdown=[broker.close],
 )
