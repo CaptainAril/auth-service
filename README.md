@@ -44,5 +44,5 @@ The Swagger documentation for the application is hosted on [Render](https://df-a
 - Run the server locally on port 8000
 
   ```bash
-  uv run manage.py runserver 8000
+  uv run uvicorn src.config.asgi:application --reload --port 8000
   ```
