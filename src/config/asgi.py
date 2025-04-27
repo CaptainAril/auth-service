@@ -16,7 +16,7 @@ from starlette.applications import Starlette
 
 from src.env import rabbitmq_config
 
-broker = RabbitBroker(host=rabbitmq_config["host"])
+broker = RabbitBroker(rabbitmq_config["url"])
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "src.config.settings")
