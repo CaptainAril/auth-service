@@ -1,24 +1,24 @@
 from typing import Annotated
 
-from src.utils.svcs import Service
-from src.config.asgi import broker
-from src.utils.logger import Logger
+from src.api.constants.activity_types import ACTIVITY_TYPES
+from src.api.constants.messages import DYNAMIC_MESSAGES, MESSAGES
+from src.api.constants.queues import QUEUE_NAMES
+from src.api.models.payload.requests.AuthenticateUserOtp import \
+    AuthenticateUserOtp
+from src.api.models.payload.requests.AuthenticateUserRequest import \
+    AuthenticateUserRequest
+from src.api.models.payload.requests.ChangeUserPasswordRequest import \
+    ChangeUserPasswordRequest
+from src.api.models.payload.requests.CreateUserRequest import CreateUserRequest
+from src.api.models.payload.requests.JWT import JWT
+from src.api.models.payload.requests.ResendUserOtp import ResendUserOtp
+from src.api.repositories.UserRepository import UserRepository
 from src.api.typing.JWT import JWTSuccess
 from src.api.typing.UserExists import UserExists
-from src.api.constants.messages import MESSAGES, DYNAMIC_MESSAGES
 from src.api.typing.UserSuccess import UserSuccess
-from src.api.constants.activity_types import ACTIVITY_TYPES
-from src.api.models.payload.requests.JWT import JWT
-from src.api.repositories.UserRepository import UserRepository
-from src.api.models.payload.requests.ResendUserOtp import ResendUserOtp
-from src.api.models.payload.requests.CreateUserRequest import CreateUserRequest
-from src.api.models.payload.requests.AuthenticateUserOtp import AuthenticateUserOtp
-from src.api.models.payload.requests.AuthenticateUserRequest import (
-    AuthenticateUserRequest,
-)
-from src.api.models.payload.requests.ChangeUserPasswordRequest import (
-    ChangeUserPasswordRequest,
-)
+from src.config.asgi import broker
+from src.utils.logger import Logger
+from src.utils.svcs import Service
 
 from .OtpService import OtpService
 from .UtilityService import UtilityService
@@ -62,7 +62,7 @@ class AuthService:
         created_user = await UserRepository.add(req)
 
         user_data = {"id": created_user.id, "email": created_user.email}
-        queue = "create-user"
+        queue = QUEUE_NAMES["USER_REGISTRATION"]
 
         await broker.publish(message=user_data, queue=queue, persist=True)
 
@@ -126,8 +126,9 @@ class AuthService:
         await UserRepository.update_by_user(
             user, {"is_active": True, "is_enabled": True, "is_validated": True}
         )
+
         user_data = {"id": user.id, "email": user.email}
-        queue = "validate-user"
+        queue = QUEUE_NAMES["EMAIL_VALIDATION"]
         await broker.publish(message=user_data, queue=queue, persist=True)
 
         return True

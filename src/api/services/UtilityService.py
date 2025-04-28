@@ -1,21 +1,32 @@
+import hashlib
+import hmac
+from datetime import datetime, timedelta
+from typing import TypedDict
 from uuid import uuid4
-from datetime import timedelta
 
-import jwt
 import bcrypt
-from faker import Faker
+import jwt
 from django.utils import timezone
+from faker import Faker
+from ninja.errors import AuthenticationError
 
-from src.env import jwt_config
-from src.utils.svcs import Service
-from src.api.typing.JWT import JWTData
+from src.api.enums.CharacterCasing import CharacterCasing
 from src.api.models.postgres import User
 from src.api.typing.ExpireUUID import ExpireUUID
-from src.api.enums.CharacterCasing import CharacterCasing
+from src.api.typing.JWT import JWTData
+from src.env import jwt_config
+from src.utils.logger import Logger
+from src.utils.svcs import Service
 
 DEFAULT_CHARACTER_LENGTH = 12
 fake = Faker()
 
+class SignatureData(TypedDict):
+    title: str
+    signature: str
+    timestamp: str
+    key: str
+    ttl: int | float
 
 @Service()
 class UtilityService:
@@ -95,3 +106,55 @@ class UtilityService:
         lifespan = timedelta(hours=24)
         expires_at = current_time + lifespan
         return {"uuid": uuid4(), "expires_at": expires_at}
+
+    @staticmethod
+    def generate_signature(key: str, timestamp: str) -> str:
+        signature = hmac.new(
+            key=key.encode(), msg=timestamp.encode(), digestmod=hashlib.sha256
+        ).hexdigest()
+        return signature
+
+
+    @staticmethod
+    def verify_signature(signature_data: SignatureData, logger: Logger) -> bool:
+        
+        signature = signature_data["signature"]
+        timestamp = signature_data["timestamp"]
+        key = signature_data["key"]
+        ttl = signature_data["ttl"]
+        title = signature_data["title"]
+
+
+        valid_signature = UtilityService.generate_signature(key, timestamp)
+        is_valid = hmac.compare_digest(valid_signature, signature)
+
+        if not is_valid:
+            message = "Invalid signature!"
+            logger.error(
+                {
+                    "activity_type": f"Authenticate {title} Request",
+                    "message": message,
+                    "metadata": {"signature": signature},
+                }
+            )
+            raise AuthenticationError(message=message)
+
+        initial_time = datetime.fromtimestamp(float(timestamp) / 1000)
+        valid_window = initial_time + timedelta(minutes=ttl)
+        if valid_window < datetime.now():
+            message = "Signature expired!"
+            logger.error(
+                {
+                    "activity_type": f"Authenticate {title} Request",
+                    "message": message,
+                    "metadata": {"timestamp": timestamp},
+                }
+            )
+            raise AuthenticationError(message=message)
+
+        return True
+
+    @staticmethod
+    def get_timestamp() -> str:
+        current_time = datetime.now().timestamp() * 1000
+        return str(current_time)
