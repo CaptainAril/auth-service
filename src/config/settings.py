@@ -2,11 +2,11 @@ from src.env import app
 
 from .apps import INSTALLED_APPS as INSTALLED_APPS
 from .caches import CACHES as CACHES
-from .databases import DATABASE_ROUTERS as DATABASE_ROUTERS
-from .databases import DATABASES as DATABASES
 from .logger import LOGGING as LOGGING
-from .middleware import MIDDLEWARE as MIDDLEWARE
+from .databases import DATABASES as DATABASES
+from .databases import DATABASE_ROUTERS as DATABASE_ROUTERS
 from .templates import TEMPLATES as TEMPLATES
+from .middleware import MIDDLEWARE as MIDDLEWARE
 
 SECRET_KEY = app["secret_key"]
 DEBUG = app["debug"]
@@ -19,9 +19,9 @@ ASGI_APPLICATION = "src.config.asgi.application"
 STATIC_URL = "static/"
 MEDIA_URL = "media/"
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 

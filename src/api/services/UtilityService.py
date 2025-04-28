@@ -1,25 +1,26 @@
-import hashlib
 import hmac
-from datetime import datetime, timedelta
-from typing import TypedDict
+import hashlib
 from uuid import uuid4
+from typing import TypedDict
+from datetime import datetime, timedelta
 
-import bcrypt
 import jwt
-from django.utils import timezone
+import bcrypt
 from faker import Faker
+from django.utils import timezone
 from ninja.errors import AuthenticationError
 
-from src.api.enums.CharacterCasing import CharacterCasing
+from src.env import jwt_config
+from src.utils.svcs import Service
+from src.utils.logger import Logger
+from src.api.typing.JWT import JWTData
 from src.api.models.postgres import User
 from src.api.typing.ExpireUUID import ExpireUUID
-from src.api.typing.JWT import JWTData
-from src.env import jwt_config
-from src.utils.logger import Logger
-from src.utils.svcs import Service
+from src.api.enums.CharacterCasing import CharacterCasing
 
 DEFAULT_CHARACTER_LENGTH = 12
 fake = Faker()
+
 
 class SignatureData(TypedDict):
     title: str
@@ -27,6 +28,7 @@ class SignatureData(TypedDict):
     timestamp: str
     key: str
     ttl: int | float
+
 
 @Service()
 class UtilityService:
@@ -114,16 +116,13 @@ class UtilityService:
         ).hexdigest()
         return signature
 
-
     @staticmethod
     def verify_signature(signature_data: SignatureData, logger: Logger) -> bool:
-        
         signature = signature_data["signature"]
         timestamp = signature_data["timestamp"]
         key = signature_data["key"]
         ttl = signature_data["ttl"]
         title = signature_data["title"]
-
 
         valid_signature = UtilityService.generate_signature(key, timestamp)
         is_valid = hmac.compare_digest(valid_signature, signature)

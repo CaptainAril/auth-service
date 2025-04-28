@@ -1,10 +1,9 @@
-from django.http import HttpRequest
 from ninja import NinjaAPI
+from django.http import HttpRequest
 from ninja.openapi.schema import OpenAPISchema
 
-from src.api.middlewares.GateWayMiddleware import (add_global_headers,
-                                                   authentication)
 from src.env import app
+from src.api.middlewares.GateWayMiddleware import authentication, add_global_headers
 
 api: NinjaAPI = NinjaAPI(
     version=app["version"],
@@ -36,16 +35,6 @@ def custom_openapi_schema(path_params: dict | None = None) -> OpenAPISchema:
             "in": "header",
             "name": "X-API-GATEWAY-SIGNATURE",
         },
-        # "User ID": {
-        #     "type": "apiKey",
-        #     "in": "header",
-        #     "name": "X-USER-ID",
-        # },
-        # "User Email": {
-        #     "type": "apiKey",
-        #     "in": "header",
-        #     "name": "X-USER-EMAIL",
-        # },
     }
 
     schema["security"] = [
@@ -53,8 +42,6 @@ def custom_openapi_schema(path_params: dict | None = None) -> OpenAPISchema:
             "Gateway Key": [],
             "API Timestamp": [],
             "API Signature": [],
-            # "User ID": [],
-            # "User Email": [],
         }
     ]
 

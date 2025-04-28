@@ -1,7 +1,7 @@
 from typing import TypedDict
 
-from src import __description__, __display_name__, __name__, __version__
-from src.utils.env import get_env_float, get_env_int, get_env_list, get_env_str
+from src import __name__, __version__, __description__, __display_name__
+from src.utils.env import get_env_int, get_env_str, get_env_list, get_env_float
 
 
 class Env:
@@ -58,9 +58,11 @@ class Gateway(TypedDict):
     key: str
     ttl: int
 
+
 class Queue(TypedDict):
     key: str
     ttl: float
+
 
 env = Env()
 
@@ -124,4 +126,15 @@ otp: OTP = {"lifetime": get_env_int("OTP_LIFETIME")}
 
 rabbitmq_config: RabbitMQ = {"url": get_env_str("RABBITMQ_URL")}
 
-__all__ = ["app", "cache", "db", "env", "jwt_config", "log", "otp", "rabbitmq_config", "queue", "api_gateway"]
+__all__ = [
+    "api_gateway",
+    "app",
+    "cache",
+    "db",
+    "env",
+    "jwt_config",
+    "log",
+    "otp",
+    "queue",
+    "rabbitmq_config",
+]

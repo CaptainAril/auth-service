@@ -11,8 +11,8 @@ import os
 
 from django.core.asgi import get_asgi_application
 from faststream.rabbit import RabbitBroker
-from starlette.applications import Starlette
 from starlette.routing import Mount
+from starlette.applications import Starlette
 
 from src.env import rabbitmq_config
 
@@ -22,9 +22,11 @@ broker = RabbitBroker(rabbitmq_config["url"])
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "src.config.settings")
 
 
-def setup_broker_middlewares():
-    from src.api.middlewares.BrokerMiddleware import (PublishMiddleware,
-                                                      SubscribeMiddleware)
+def setup_broker_middlewares() -> None:
+    from src.api.middlewares.BrokerMiddleware import (
+        PublishMiddleware,
+        SubscribeMiddleware,
+    )
 
     broker.add_middleware(SubscribeMiddleware)
     broker.add_middleware(PublishMiddleware)
@@ -37,5 +39,4 @@ application = Starlette(
 )
 
 
-from src.api.services.external import \
-    RabbitMQRoutes as RabbitMQRoutes  # noqa: E402
+from src.api.services.external import RabbitMQRoutes as RabbitMQRoutes  # noqa: E402
