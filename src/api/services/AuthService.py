@@ -1,8 +1,10 @@
 from typing import Annotated
 
 from src.utils.svcs import Service
+from src.config.asgi import broker
 from src.utils.logger import Logger
 from src.api.typing.JWT import JWTSuccess
+from src.api.constants.queues import QUEUE_NAMES
 from src.api.typing.UserExists import UserExists
 from src.api.constants.messages import MESSAGES, DYNAMIC_MESSAGES
 from src.api.typing.UserSuccess import UserSuccess
@@ -59,6 +61,11 @@ class AuthService:
         req = req.model_copy(update={"password": hashed_password})
 
         created_user = await UserRepository.add(req)
+
+        user_data = {"id": created_user.id, "email": created_user.email}
+        queue = QUEUE_NAMES["USER_REGISTRATION"]
+
+        await broker.publish(message=user_data, queue=queue, persist=True)
 
         await self.otp_service.send_otp(created_user.id)
 
@@ -120,6 +127,11 @@ class AuthService:
         await UserRepository.update_by_user(
             user, {"is_active": True, "is_enabled": True, "is_validated": True}
         )
+
+        user_data = {"id": user.id, "email": user.email}
+        queue = QUEUE_NAMES["EMAIL_VALIDATION"]
+        await broker.publish(message=user_data, queue=queue, persist=True)
+
         return True
 
     async def login(self, req: AuthenticateUserRequest) -> UserSuccess:

@@ -26,6 +26,10 @@ def get_env_int(name: str, default: str | None = None) -> int:
     return int(get_env_variable(name, default=default, cast=int))
 
 
+def get_env_float(name: str, default: str | None = None) -> float:
+    return float(get_env_variable(name, default=default, cast=float))
+
+
 def get_env_list(name: str, sep: str = ",", default: str | None = None) -> list[str]:
     return list(
         get_env_variable(
