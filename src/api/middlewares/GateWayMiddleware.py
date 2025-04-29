@@ -46,7 +46,7 @@ class GateWayAuth(APIKeyHeader):
             "signature": api_signature,
             "timestamp": api_timestamp,
             "key": valid_api_key,
-            "ttl": 5,
+            "ttl": api_gateway["ttl"],
             "title": SIGNATURE_SOURCES["gateway"],
         }
 

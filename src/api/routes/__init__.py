@@ -61,5 +61,5 @@ async def home(request: HttpRequest) -> dict:
 
 api.add_router("/auth", "src.api.routes.Auth.router", tags=["Auth"])
 api.add_router(
-    "/password/reset", "src.api.routes.PasswordReset.router", tags=["Password"]
+    "/auth/password/reset", "src.api.routes.PasswordReset.router", tags=["Password"]
 )

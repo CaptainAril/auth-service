@@ -118,8 +118,8 @@ api_gateway: Gateway = {
 }
 
 queue: Queue = {
-    "key": get_env_str("QUEUE_SECRECT_KEY"),
-    "ttl": get_env_float("QUEUE_SECRECT_KEY_TTL"),
+    "key": get_env_str("QUEUE_SECRET_KEY"),
+    "ttl": get_env_float("QUEUE_SECRET_KEY_TTL"),
 }
 
 otp: OTP = {"lifetime": get_env_int("OTP_LIFETIME")}
