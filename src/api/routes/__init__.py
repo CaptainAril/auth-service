@@ -20,11 +20,6 @@ def custom_openapi_schema(path_params: dict | None = None) -> OpenAPISchema:
     schema = original_get_openapi_schema()
 
     schema["components"]["securitySchemes"] = {
-        "Gateway Key": {
-            "type": "apiKey",
-            "in": "header",
-            "name": "X-API-GATEWAY-KEY",
-        },
         "API Timestamp": {
             "type": "apiKey",
             "in": "header",
@@ -39,7 +34,6 @@ def custom_openapi_schema(path_params: dict | None = None) -> OpenAPISchema:
 
     schema["security"] = [
         {
-            "Gateway Key": [],
             "API Timestamp": [],
             "API Signature": [],
         }

@@ -16,7 +16,6 @@ class GateWayAuth(APIKeyHeader):
 
     def authenticate(self, request: HttpRequest, key: str | None) -> str | None:
         try:
-            api_key = request.headers["X-API-GATEWAY-KEY"]
             api_timestamp = request.headers["X-API-GATEWAY-TIMESTAMP"]
             api_signature = request.headers["X-API-GATEWAY-SIGNATURE"]
         except KeyError as e:
@@ -30,22 +29,10 @@ class GateWayAuth(APIKeyHeader):
             )
             raise AuthenticationError(message=message)
 
-        valid_api_key = api_gateway["key"]
-        if api_key != valid_api_key:
-            message = "Invalid API key!"
-            self.logger.error(
-                {
-                    "activity_type": "Authenticate Gateway Request",
-                    "message": message,
-                    "metadata": {"headers": request.headers},
-                }
-            )
-            raise AuthenticationError(message=message)
-
         signature_data: SignatureData = {
             "signature": api_signature,
             "timestamp": api_timestamp,
-            "key": valid_api_key,
+            "key": api_gateway["key"],
             "ttl": api_gateway["ttl"],
             "title": SIGNATURE_SOURCES["gateway"],
         }

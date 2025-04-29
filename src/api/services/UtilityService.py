@@ -1,6 +1,7 @@
 import hmac
 import hashlib
 from uuid import uuid4
+from base64 import b64encode
 from typing import TypedDict
 from datetime import UTC, datetime, timedelta
 
@@ -111,9 +112,12 @@ class UtilityService:
 
     @staticmethod
     def generate_signature(key: str, timestamp: str) -> str:
-        signature = hmac.new(
-            key=key.encode(), msg=timestamp.encode(), digestmod=hashlib.sha256
-        ).hexdigest()
+        digest = hmac.new(
+            key=key.encode(),
+            msg=f"{key}:{timestamp}".encode(),
+            digestmod=hashlib.sha256,
+        ).digest()
+        signature = b64encode(digest).decode()
         return signature
 
     @staticmethod
