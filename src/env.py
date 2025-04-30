@@ -64,6 +64,10 @@ class Queue(TypedDict):
     ttl: float
 
 
+class CORS(TypedDict):
+    allowed_origins: list[str]
+
+
 env = Env()
 
 app: App = {
@@ -126,10 +130,13 @@ otp: OTP = {"lifetime": get_env_int("OTP_LIFETIME")}
 
 rabbitmq_config: RabbitMQ = {"url": get_env_str("RABBITMQ_URL")}
 
+cors: CORS = {"allowed_origins": get_env_list("CORS_ALLOWED_ORIGINS")}
+
 __all__ = [
     "api_gateway",
     "app",
     "cache",
+    "cors",
     "db",
     "env",
     "jwt_config",
