@@ -1,6 +1,7 @@
 from src.env import app
 
 from .apps import INSTALLED_APPS as INSTALLED_APPS
+from .cors import CORS_ALLOWED_ORIGINS as CORS_ALLOWED_ORIGINS
 from .caches import CACHES as CACHES
 from .logger import LOGGING as LOGGING
 from .databases import DATABASES as DATABASES
